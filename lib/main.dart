@@ -5,6 +5,7 @@
 // State class.
 
 import 'package:english_words/english_words.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(new MyApp());
@@ -19,7 +20,7 @@ void main() => runApp(new MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return new CupertinoApp(
       title: 'Shopping App',
       home: new ShopList(
         products: <Product>[
@@ -240,18 +241,17 @@ class ShoppingListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {
-        onCartChanged(product, inCart);
-      },
-      leading: new CircleAvatar(
-        backgroundColor: _getColor(context),
-        child: Text(product.name[0]),
-      ),
-      title: Text(
-        product.name,
-        style: _getTextStyle(context),
-      ),
+    return new Row(
+      children: <Widget>[
+        new CircleAvatar(
+          backgroundColor: _getColor(context),
+          child: Text(product.name[0]),
+        ),
+        new Text(
+          product.name,
+          style: _getTextStyle(context),
+        )
+      ],
     );
   }
 }
@@ -282,11 +282,11 @@ class _ShoppingListState extends State<ShopList> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Shopping List'),
+    return new CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: new Text('Shopping List'),
       ),
-      body: new ListView(
+      child: new ListView(
         padding: new EdgeInsets.symmetric(vertical: 8.0),
         children: widget.products.map((product) {
           return new ShoppingListItem(
