@@ -20,9 +20,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Startup Name Generator',
-      home: new Counter(),
-      theme: ThemeData(primaryColor: Colors.white),
+      title: 'Shopping App',
+      home: new ShopList(
+        products: <Product>[
+          new Product(name: 'Eggs'),
+          new Product(name: 'Flour'),
+          new Product(name: 'Chocolate chips'),
+          new Product(name: 'Keke words')
+        ],
+      ),
     );
   }
 }
@@ -202,6 +208,94 @@ class _CounterSate extends State<Counter> {
         ),
         new Text('Count: $_counter')
       ],
+    );
+  }
+}
+
+class Product {
+  const Product({this.name});
+
+  final String name;
+}
+
+typedef void CartChangedCallBack(Product product, bool inCart);
+
+class ShoppingListItem extends StatelessWidget {
+  ShoppingListItem({this.product, this.inCart, this.onCartChanged})
+      : super(key: new ObjectKey(product));
+  final Product product;
+  final bool inCart;
+  final CartChangedCallBack onCartChanged;
+
+  Color _getColor(BuildContext context) {
+    return inCart ? Colors.black54 : Theme.of(context).primaryColor;
+  }
+
+  TextStyle _getTextStyle(BuildContext context) {
+    return !inCart
+        ? null
+        : new TextStyle(
+            color: Colors.black54, decoration: TextDecoration.lineThrough);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: () {
+        onCartChanged(product, inCart);
+      },
+      leading: new CircleAvatar(
+        backgroundColor: _getColor(context),
+        child: Text(product.name[0]),
+      ),
+      title: Text(
+        product.name,
+        style: _getTextStyle(context),
+      ),
+    );
+  }
+}
+
+class ShopList extends StatefulWidget {
+  final List<Product> products;
+
+  ShopList({Key key, this.products}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return new _ShoppingListState();
+  }
+}
+
+class _ShoppingListState extends State<ShopList> {
+  Set<Product> _shoppingCart = new Set<Product>();
+
+  void _handleCartChanged(Product product, bool inCart) {
+    setState(() {
+      if (inCart) {
+        _shoppingCart.remove(product);
+      } else {
+        _shoppingCart.add(product);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text('Shopping List'),
+      ),
+      body: new ListView(
+        padding: new EdgeInsets.symmetric(vertical: 8.0),
+        children: widget.products.map((product) {
+          return new ShoppingListItem(
+            product: product,
+            inCart: _shoppingCart.contains(product),
+            onCartChanged: _handleCartChanged,
+          );
+        }).toList(),
+      ),
     );
   }
 }
