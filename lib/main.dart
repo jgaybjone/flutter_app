@@ -282,20 +282,57 @@ class _ShoppingListState extends State<ShopList> {
 
   @override
   Widget build(BuildContext context) {
-    return new CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: new Text('Shopping List'),
+    return new CupertinoTabScaffold(
+      tabBar: new CupertinoTabBar(
+        iconSize: 80,
+        currentIndex: 0,
+        items: [
+          BottomNavigationBarItem(
+              title: new Text(
+                'tab 1',
+                style: new TextStyle(color: Colors.red),
+              ),
+              icon: new CircleAvatar(
+                child: new Text('One'),
+              )),
+          BottomNavigationBarItem(
+              title: new Container(
+//                height: 40,
+                child: new Text(
+                  'tab 2',
+                  style: TextStyle(color: Colors.blue, fontSize: 14),
+                ),
+              ),
+              icon: new Container(
+//                height: 40,
+                child: new CircleAvatar(
+                  child: new Text('Two'),
+                ),
+              ))
+        ],
       ),
-      child: new ListView(
-        padding: new EdgeInsets.symmetric(vertical: 8.0),
-        children: widget.products.map((product) {
-          return new ShoppingListItem(
-            product: product,
-            inCart: _shoppingCart.contains(product),
-            onCartChanged: _handleCartChanged,
-          );
-        }).toList(),
-      ),
+      tabBuilder: (BuildContext context, int index) {
+        return CupertinoTabView(
+          defaultTitle: 'Shopping List222',
+          builder: (BuildContext context) {
+            return CupertinoPageScaffold(
+                navigationBar: CupertinoNavigationBar(
+                  leading: new Text('leading'),
+                  middle: new Text('Shopping List'),
+                ),
+                child: new ListView(
+                  padding: new EdgeInsets.symmetric(vertical: 8.0),
+                  children: widget.products.map((product) {
+                    return new ShoppingListItem(
+                      product: product,
+                      inCart: _shoppingCart.contains(product),
+                      onCartChanged: _handleCartChanged,
+                    );
+                  }).toList(),
+                ));
+          },
+        );
+      },
     );
   }
 }
