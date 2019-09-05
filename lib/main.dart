@@ -4,335 +4,134 @@
 // Make the hearts tappable and save the favorites list in the
 // State class.
 
-import 'package:english_words/english_words.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(new MyApp());
 
-//void main() {
-//  runApp(new MaterialApp(
-//    title: 'My app', // used by the OS task switcher
-//    home: new TutorialHome(),
-//  ));
-//}
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new CupertinoApp(
-      title: 'Shopping App',
-      home: new ShopList(
-        products: <Product>[
-          new Product(name: 'Eggs'),
-          new Product(name: 'Flour'),
-          new Product(name: 'Chocolate chips'),
-          new Product(name: 'Keke words')
-        ],
-      ),
-    );
-  }
-}
-
-class RandomWords extends StatefulWidget {
-  @override
-  createState() => new RandomWordsState();
-}
-
-class RandomWordsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
-
-  final _saved = new Set<WordPair>();
-
-  final _biggerFont = const TextStyle(fontSize: 18.0);
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Startup Name Generator'),
-        actions: <Widget>[
-          new IconButton(icon: new Icon(Icons.list), onPressed: _pushSaved)
-        ],
-      ),
-      body: _buildSuggestions(),
-    );
-  }
-
-  Widget _buildSuggestions() {
-    return new ListView.builder(
-      padding: const EdgeInsets.all(16.0),
-      itemBuilder: (context, i) {
-        if (i.isOdd) return new Divider();
-
-        final index = i ~/ 2;
-        if (index >= _suggestions.length) {
-          _suggestions.addAll(generateWordPairs().take(10));
-        }
-        return _buildRow(_suggestions[index]);
-      },
-    );
-  }
-
-  Widget _buildRow(WordPair pair) {
-    final alreadySaved = _saved.contains(pair);
-    return new ListTile(
-      title: new Text(
-        pair.asPascalCase,
-        style: _biggerFont,
-      ),
-      trailing: new Icon(
-        alreadySaved ? Icons.favorite : Icons.favorite_border,
-        color: alreadySaved ? Colors.red : null,
-      ),
-      onTap: () {
-        setState(
-          () {
-            if (alreadySaved) {
-              _saved.remove(pair);
-            } else {
-              _saved.add(pair);
-            }
-          },
-        );
-      },
-    );
-  }
-
-  void _pushSaved() {
-    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-      var titles = _saved.map((pair) {
-        return new ListTile(
-          title: new Text(
-            pair.asPascalCase,
-            style: _biggerFont,
-          ),
-        );
-      });
-      var divides =
-          ListTile.divideTiles(context: context, tiles: titles).toList();
-      return new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Saved Suggestions'),
-        ),
-        body: new ListView(
-          children: divides,
-        ),
-      );
-    }));
-  }
-}
-
-class TutorialHome extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    //Scaffold是Material中主要的布局组件.
-    return new Scaffold(
-      appBar: new AppBar(
-        leading: new IconButton(
-          icon: new Icon(Icons.menu),
-          tooltip: 'Navigation menu',
-          onPressed: null,
-        ),
-        title: new Text('Example title'),
-        actions: <Widget>[
-          new IconButton(
-            icon: new Icon(Icons.search),
-            tooltip: 'Search',
-            onPressed: null,
-          ),
-        ],
-      ),
-      //body占屏幕的大部分
-      body: new Center(
-        child: new Text('Hello, world!'),
-      ),
-      floatingActionButton: new FloatingActionButton(
-        tooltip: 'Add', // used by assistive technologies
-        child: new Icon(Icons.add),
-        onPressed: null,
-      ),
-    );
-  }
-}
-
-class MyButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var body = new Text('Engage');
-    return new GestureDetector(
-      onTap: () {
-        print('MyButton was tapped!');
-      },
-      onDoubleTap: () {
-        print('double taped');
-      },
-      child: new Container(
-        height: 36.0,
-        padding: const EdgeInsets.all(8.0),
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
-        decoration: new BoxDecoration(
-          borderRadius: new BorderRadius.circular(5.0),
-          color: Colors.lightGreen[500],
-        ),
-        child: new Center(
-          child: body,
-        ),
-      ),
-    );
-  }
-}
-
-class Counter extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return _CounterSate();
-  }
-}
-
-class _CounterSate extends State<Counter> {
-  int _counter = 0;
-
-  void _increment() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Row(
-      children: <Widget>[
-        new RaisedButton(
-          onPressed: _increment,
-          child: new Text('Increment'),
-        ),
-        new Text('Count: $_counter')
-      ],
-    );
-  }
-}
-
-class Product {
-  const Product({this.name});
-
-  final String name;
-}
-
-typedef void CartChangedCallBack(Product product, bool inCart);
-
-class ShoppingListItem extends StatelessWidget {
-  ShoppingListItem({this.product, this.inCart, this.onCartChanged})
-      : super(key: new ObjectKey(product));
-  final Product product;
-  final bool inCart;
-  final CartChangedCallBack onCartChanged;
-
-  Color _getColor(BuildContext context) {
-    return inCart ? Colors.black54 : Theme.of(context).primaryColor;
-  }
-
-  TextStyle _getTextStyle(BuildContext context) {
-    return !inCart
-        ? null
-        : new TextStyle(
-            color: Colors.black54, decoration: TextDecoration.lineThrough);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Row(
-      children: <Widget>[
-        new CircleAvatar(
-          backgroundColor: _getColor(context),
-          child: Text(product.name[0]),
-        ),
-        new Text(
-          product.name,
-          style: _getTextStyle(context),
-        )
-      ],
-    );
-  }
-}
-
-class ShopList extends StatefulWidget {
-  final List<Product> products;
-
-  ShopList({Key key, this.products}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() {
-    return new _ShoppingListState();
-  }
-}
-
-class _ShoppingListState extends State<ShopList> {
-  Set<Product> _shoppingCart = new Set<Product>();
-
-  void _handleCartChanged(Product product, bool inCart) {
-    setState(() {
-      if (inCart) {
-        _shoppingCart.remove(product);
-      } else {
-        _shoppingCart.add(product);
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new CupertinoTabScaffold(
-      tabBar: new CupertinoTabBar(
-        iconSize: 80,
-        currentIndex: 0,
-        items: [
-          BottomNavigationBarItem(
-              title: new Text(
-                'tab 1',
-                style: new TextStyle(color: Colors.red),
-              ),
-              icon: new CircleAvatar(
-                child: new Text('One'),
-              )),
-          BottomNavigationBarItem(
-              title: new Container(
-//                height: 40,
+    final titleRow = Container(
+      padding: const EdgeInsets.all(32),
+      child: new Row(
+        children: <Widget>[
+          new Expanded(
+              child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              new Container(
+                padding: EdgeInsets.only(bottom: 8),
                 child: new Text(
-                  'tab 2',
-                  style: TextStyle(color: Colors.blue, fontSize: 14),
+                  'Oeschinen Lake Campground',
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              icon: new Container(
-//                height: 40,
-                child: new CircleAvatar(
-                  child: new Text('Two'),
-                ),
-              ))
+              Text(
+                'Kandersteg, Switzerland',
+                style: TextStyle(color: Colors.grey[500]),
+              )
+            ],
+          )),
+          Icon(
+            Icons.star,
+            color: Colors.red[500],
+          ),
+          Text('41')
         ],
       ),
-      tabBuilder: (BuildContext context, int index) {
-        return CupertinoTabView(
-          defaultTitle: 'Shopping List222',
-          builder: (BuildContext context) {
-            return CupertinoPageScaffold(
-                navigationBar: CupertinoNavigationBar(
-                  leading: new Text('leading'),
-                  middle: new Text('Shopping List'),
-                ),
-                child: new ListView(
-                  padding: new EdgeInsets.symmetric(vertical: 8.0),
-                  children: widget.products.map((product) {
-                    return new ShoppingListItem(
-                      product: product,
-                      inCart: _shoppingCart.contains(product),
-                      onCartChanged: _handleCartChanged,
-                    );
-                  }).toList(),
-                ));
-          },
-        );
-      },
     );
+
+    Color color = Theme.of(context).primaryColor;
+
+    final buttonRow = Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          new Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.call,
+                color: color,
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 8),
+                child: Text(
+                  'CALL',
+                  style: TextStyle(fontSize: 12, color: color),
+                ),
+              )
+            ],
+          ),
+          new Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.near_me,
+                color: color,
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 8),
+                child: Text(
+                  'ROUTE',
+                  style: TextStyle(fontSize: 12, color: color),
+                ),
+              )
+            ],
+          ),
+          new Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.share,
+                color: color,
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 8),
+                child: Text(
+                  'SHARE',
+                  style: TextStyle(fontSize: 12, color: color),
+                ),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+
+    final contentRow = Container(
+      padding: EdgeInsets.all(32.0),
+      child: Text('''
+Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese Alps. Situated 1,578 meters above sea level, it is one of the larger Alpine Lakes. A gondola ride from Kandersteg, followed by a half-hour walk through pastures and pine forest, leads you to the lake, which warms to 20 degrees Celsius in the summer. Activities enjoyed here include rowing, and riding the summer toboggan run.
+        '''),
+    );
+
+    final imageRow = ListView(
+      shrinkWrap: true,
+      children: <Widget>[
+        Image.asset(
+          'images/lake.jpeg',
+          height: 240.0,
+          fit: BoxFit.fill,
+        ),
+      ],
+    );
+
+    var body = ListView(
+      shrinkWrap: true,
+      children: <Widget>[imageRow, titleRow, buttonRow, contentRow],
+    );
+
+    final app = MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(primarySwatch: Colors.blue),
+//home: new Center(child: new Text('Hello World'),),
+      home: Scaffold(body: body),
+    );
+
+    return app;
   }
 }
