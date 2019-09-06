@@ -20,7 +20,9 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.12.0+2
+  # 序列化注解
   json_annotation: ^3.0.0
+  # iOS UserDefaults
   shared_preferences: ^0.5.3+4
 
 
@@ -28,10 +30,16 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   english_words: ^3.1.5
+  #  推送处理
+  firebase: ^5.0.0
+  # iot设备配置wifi
+  airkiss: ^1.0.0
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  # 编译期生成json序列号方法
   build_runner: ^1.6.7
   json_serializable: ^3.2.2
 
