@@ -5,9 +5,12 @@
 // State class.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/login.dart';
 
-void main() => runApp(new MyApp());
+void main() {
+  runApp(new MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -145,6 +148,7 @@ Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese Alps. Situate
 
     return Scaffold(
         appBar: AppBar(
+          brightness: Brightness.light,
           title: Text('首页'),
         ),
         body: body);
