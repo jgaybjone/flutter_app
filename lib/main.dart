@@ -5,10 +5,26 @@
 // State class.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/login.dart';
 
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: MainApp(),
+      routes: {
+//        "/": (BuildContext context) => MainApp(),
+        "/login": (context) => Login(),
+      },
+    );
+  }
+}
+
+class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final titleRow = Container(
@@ -126,14 +142,11 @@ Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese Alps. Situate
       children: <Widget>[imageRow, titleRow, buttonRow, contentRow],
     );
 
-    final app = MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-//home: new Center(child: new Text('Hello World'),),
-      home: Scaffold(body: body),
-    );
-
-    return app;
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('首页'),
+        ),
+        body: body);
   }
 }
 
@@ -158,6 +171,24 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
         _isFavorite = true;
       }
     });
+//    Navigator.pushNamed(context, "/login");
+    Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (BuildContext context, Animation<double> animation,
+                  Animation<double> secondaryAnimation) =>
+              Login(),
+          transitionsBuilder: (BuildContext context,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+              Widget child) {
+            return SlideTransition(
+              position: animation
+                  .drive(Tween(begin: Offset(0.0, -1.0), end: Offset.zero)),
+              child: child,
+            );
+          },
+        ));
   }
 
   @override
