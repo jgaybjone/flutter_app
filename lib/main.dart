@@ -12,13 +12,14 @@ void main() => runApp(new MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var login = Login();
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: MainApp(),
       routes: {
 //        "/": (BuildContext context) => MainApp(),
-        "/login": (context) => Login(),
+        "/login": (context) => login,
       },
     );
   }
