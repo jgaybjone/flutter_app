@@ -30,7 +30,8 @@ class Login extends StatelessWidget {
         child: TextField(
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.fromLTRB(10, 6, 10, 6),
-                icon: ImageIcon(AssetImage('icons/password.png'), color: Colors.blue),
+                icon: ImageIcon(AssetImage('icons/password.png'),
+                    color: Colors.blue),
                 hintText: '登录密码')),
       ),
     );
@@ -63,6 +64,7 @@ class Login extends StatelessWidget {
     );
 
     final rows = ListView(
+      physics: const NeverScrollableScrollPhysics(),
       children: <Widget>[head, mobile, password, loginBtn, registBtn],
     );
 
