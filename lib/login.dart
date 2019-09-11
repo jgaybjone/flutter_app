@@ -84,12 +84,10 @@ class Login extends StatelessWidget {
     );
 
     var body = Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
         head,
-//        Expanded(
-//          child: head,
-//          flex: 3,
-//        ),
         Container(
           child: Column(
             children: <Widget>[mobile, password],
@@ -128,7 +126,7 @@ class Login extends StatelessWidget {
                 IconButton(
                     icon: ImageIcon(AssetImage('icons/wechat.png')),
                     iconSize: 40,
-                    color: Colors.grey,
+                    color: Colors.grey[500],
                     onPressed: () {
                       print('微信登录');
                     }),
@@ -142,16 +140,8 @@ class Login extends StatelessWidget {
     );
 
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: body,
-//      floatingActionButton: FlatButton(
-//        onPressed: () => print('点击了重置密码'),
-//        child: Text(
-//          '重置密码',
-//          style: TextStyle(fontSize: 14, color: Colors.grey),
-//        ),
-//      ),
-//      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-//      floatingActionButton: <Widget>[resetPwd],
     );
   }
 }
