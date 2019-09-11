@@ -5,12 +5,12 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     var head = Container(
         padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
-//        height: 100,
+        height: 200,
         child: Center(
           child: Image.asset(
             'images/portrait.png',
-            height: 80,
-            width: 80,
+            height: 90,
+            width: 90,
           ),
         ));
 
@@ -69,8 +69,8 @@ class Login extends StatelessWidget {
       child: FlatButton(
         onPressed: () => print('点击了重置密码'),
         child: Text(
-          '重置密码',
-          style: TextStyle(fontSize: 14, color: Colors.grey),
+          '查找密码',
+          style: TextStyle(fontSize: 14, color: Colors.blue),
         ),
       ),
     );
@@ -85,10 +85,11 @@ class Login extends StatelessWidget {
 
     var body = Column(
       children: <Widget>[
-        Expanded(
-          child: head,
-          flex: 3,
-        ),
+        head,
+//        Expanded(
+//          child: head,
+//          flex: 3,
+//        ),
         Container(
           child: Column(
             children: <Widget>[mobile, password],
@@ -113,13 +114,16 @@ class Login extends StatelessWidget {
           ),
         ),
         Expanded(
-            flex: 2,
+            flex: 8,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  child: Text('微信登录'),
+                  child: Text(
+                    '微信登录',
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
                 ),
                 IconButton(
                     icon: ImageIcon(AssetImage('icons/wechat.png')),
