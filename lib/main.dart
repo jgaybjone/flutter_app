@@ -31,6 +31,22 @@ class MyApp extends StatelessWidget {
 class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return MainPage();
+  }
+}
+
+class MainPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return MainPageState();
+  }
+}
+
+class MainPageState extends State<MainPage> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
     final titleRow = Container(
       padding: const EdgeInsets.all(32),
       child: new Row(
@@ -146,13 +162,55 @@ Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese Alps. Situate
       shrinkWrap: true,
       children: <Widget>[imageRow, titleRow, buttonRow, contentRow],
     );
-
     return Scaffold(
         appBar: AppBar(
           brightness: Brightness.light,
           title: Text('首页'),
         ),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+                icon: ImageIcon(AssetImage('icons/ic_reminder.png')), title: Text("服药提醒")),
+            BottomNavigationBarItem(
+                icon: ImageIcon(AssetImage('icons/ic_message.png')),
+                title: Text("消息中心")),
+            BottomNavigationBarItem(
+                icon: ImageIcon(AssetImage('icons/ic_article.png')), title: Text("健康资讯")),
+            BottomNavigationBarItem(
+                icon: ImageIcon(AssetImage('icons/ic_user.png')), title: Text("个人中心"))
+          ],
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+              if (index == 3) {
+                loginPage(context);
+              }
+            });
+          },
+        ),
         body: body);
+  }
+
+  static loginPage(BuildContext context) {
+    Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (BuildContext context, Animation<double> animation,
+                  Animation<double> secondaryAnimation) =>
+              Login(),
+          transitionsBuilder: (BuildContext context,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+              Widget child) {
+            return SlideTransition(
+              position: animation
+                  .drive(Tween(begin: Offset(0.0, 1.0), end: Offset.zero)),
+              child: child,
+            );
+          },
+        ));
   }
 }
 
@@ -166,6 +224,7 @@ class FavoriteWidget extends StatefulWidget {
 class _FavoriteWidgetState extends State<FavoriteWidget> {
   bool _isFavorite = true;
   int _favoriteCount = 41;
+  StatelessWidget _loginWidget = Login();
 
   void _toggleFavorite() {
     setState(() {
@@ -183,14 +242,14 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
         PageRouteBuilder(
           pageBuilder: (BuildContext context, Animation<double> animation,
                   Animation<double> secondaryAnimation) =>
-              Login(),
+              _loginWidget,
           transitionsBuilder: (BuildContext context,
               Animation<double> animation,
               Animation<double> secondaryAnimation,
               Widget child) {
             return SlideTransition(
               position: animation
-                  .drive(Tween(begin: Offset(0.0, -1.0), end: Offset.zero)),
+                  .drive(Tween(begin: Offset(0.0, 1.0), end: Offset.zero)),
               child: child,
             );
           },
