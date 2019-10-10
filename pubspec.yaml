@@ -59,6 +59,7 @@ flutter:
   assets:
     - images/lake.jpeg
     - images/portrait.png
+    - images/medicine.png
     - icons/phone.png
     - icons/password.png
     - icons/wechat.png

@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(new MyApp());
@@ -31,19 +32,39 @@ class MyApp extends StatelessWidget {
 class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MainPage();
+    var manPage = MainPage(context);
+    return manPage;
   }
 }
 
+// ignore: must_be_immutable
 class MainPage extends StatefulWidget {
+  BuildContext _context;
+
+  MainPage(BuildContext context) {
+    _context = context;
+  }
+
   @override
   State<StatefulWidget> createState() {
+    this._checkToken();
     return MainPageState();
+  }
+
+  _checkToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+    if (token == null) {
+      await MainPageState.loginPage(_context);
+    } else {
+      await prefs.setString("token", "xiaojiling");
+    }
   }
 }
 
 class MainPageState extends State<MainPage> {
   int _currentIndex = 0;
+  List<String> _titles = ["服药提醒", "消息中心", "健康资讯", "个人中心"];
 
   @override
   Widget build(BuildContext context) {
@@ -163,34 +184,63 @@ Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese Alps. Situate
       children: <Widget>[imageRow, titleRow, buttonRow, contentRow],
     );
     return Scaffold(
-        appBar: AppBar(
-          brightness: Brightness.light,
-          title: Text('首页'),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-                icon: ImageIcon(AssetImage('icons/ic_reminder.png')), title: Text("服药提醒")),
-            BottomNavigationBarItem(
-                icon: ImageIcon(AssetImage('icons/ic_message.png')),
-                title: Text("消息中心")),
-            BottomNavigationBarItem(
-                icon: ImageIcon(AssetImage('icons/ic_article.png')), title: Text("健康资讯")),
-            BottomNavigationBarItem(
-                icon: ImageIcon(AssetImage('icons/ic_user.png')), title: Text("个人中心"))
-          ],
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-              if (index == 3) {
-                loginPage(context);
-              }
-            });
-          },
-        ),
-        body: body);
+      appBar: AppBar(
+        brightness: Brightness.light,
+        title: Text(_titles[_currentIndex]),
+      ),
+      backgroundColor: Color.fromARGB(255, 242, 242, 242),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: ImageIcon(AssetImage('icons/ic_reminder.png')),
+              title: Text(_titles.first)),
+          BottomNavigationBarItem(
+              icon: ImageIcon(AssetImage('icons/ic_message.png')),
+              title: Text(_titles[1])),
+          BottomNavigationBarItem(
+              icon: ImageIcon(AssetImage('icons/ic_article.png')),
+              title: Text(_titles[2])),
+          BottomNavigationBarItem(
+              icon: ImageIcon(AssetImage('icons/ic_user.png')),
+              title: Text(_titles.last))
+        ],
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+      ),
+//        body: body
+      body: ListView(
+        children: <Widget>[
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          RemindCell(),
+          Container(
+            height: 10,
+            color: Colors.transparent,
+          )
+        ],
+      ),
+    );
   }
 
   static loginPage(BuildContext context) {
@@ -276,6 +326,73 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
           ),
         )
       ],
+    );
+  }
+}
+
+class RemindCell extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return RemindCellState();
+  }
+}
+
+class RemindCellState extends State<RemindCell> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(4.0))),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Image.asset(
+                'images/medicine.png',
+                height: 40.0,
+                fit: BoxFit.contain,
+              ),
+              Expanded(
+                child: Text("date"),
+              )
+            ],
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+            height: 2,
+            color: const Color.fromARGB(255, 242, 242, 242),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 4),
+            child: Row(
+              children: <Widget>[
+                Text("title"),
+                Expanded(
+                    child: SizedBox(
+                  height: 10,
+                )),
+                Container(
+                    width: 60,
+                    height: 22,
+                    child: FlatButton(
+                      color: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(11)),
+                      onPressed: () {},
+                      textColor: Colors.white,
+                      child: Text("服药"),
+                    ))
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
