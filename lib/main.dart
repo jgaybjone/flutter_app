@@ -215,25 +215,25 @@ Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese Alps. Situate
 //        body: body
       body: ListView(
         children: <Widget>[
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
-          RemindCell(),
+          RemindCell(Colors.red, 0),
+          RemindCell(Colors.blue, 1),
+          RemindCell(Colors.grey, 0),
+          RemindCell(Colors.brown, 0),
+          RemindCell(Colors.brown, 0),
+          RemindCell(Colors.indigo, 1),
+          RemindCell(Colors.indigo, 1),
+          RemindCell(Colors.indigo, 1),
+          RemindCell(Colors.brown, 0),
+          RemindCell(Colors.brown, 0),
+          RemindCell(Colors.blue, 1),
+          RemindCell(Colors.blue, 1),
+          RemindCell(Colors.blue, 1),
+          RemindCell(Colors.blue, 1),
+          RemindCell(Colors.blue, 1),
+          RemindCell(Colors.blue, 1),
+          RemindCell(Colors.blue, 1),
+          RemindCell(Colors.blue, 1),
+          RemindCell(Colors.blue, 1),
           Container(
             height: 10,
             color: Colors.transparent,
@@ -331,14 +331,36 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
 }
 
 class RemindCell extends StatefulWidget {
+  RemindCell(Color subTitleFontColor, int type) {
+    this._subTitleFontColor = subTitleFontColor;
+    this._type = type;
+  }
+
+  var _subTitleFontColor = Colors.blue;
+
+  /**
+   * 0 服药按钮，1 删除按钮
+   */
+  var _type = 0;
+
   @override
   State<StatefulWidget> createState() {
-    return RemindCellState();
+    return RemindCellState(_subTitleFontColor, _type);
   }
 }
 
 class RemindCellState extends State<RemindCell> {
+  RemindCellState(Color subTitleFontColor, int type) {
+    this._subTitleFontColor = subTitleFontColor;
+    this._type = type;
+  }
+
   var _subTitleFontColor = Colors.blue;
+
+  /**
+   * 0 服药按钮，1 删除按钮
+   */
+  var _type = 0;
 
   Widget _takingMedicine = Container(
       width: 60,
@@ -423,7 +445,7 @@ class RemindCellState extends State<RemindCell> {
                   child: SizedBox(
                 height: 0,
               )),
-              _takingMedicine
+              _type == 0 ? _takingMedicine : _deletedBtn
             ],
           ),
         ],
