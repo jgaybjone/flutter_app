@@ -1,8 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/backen_api.dart';
 
 class Login extends StatelessWidget {
+  BuildContext _context;
+
+  //手机号的控制器
+  TextEditingController phoneController = TextEditingController();
+
+  //密码的控制器
+  TextEditingController passController = TextEditingController();
+
+  void login() {
+    BackendApi.patientLogin(phoneController.text, passController.text, (data) {
+
+      Navigator.pop(_context);
+    }, (data) {
+      showDialog(
+          context: _context,
+          builder: (_) => Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.center,
+                      color: Colors.white,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(top: 8),
+                            child: Text('Custom Dialog',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    decoration: TextDecoration.none)),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 15, bottom: 8),
+                            child: FlatButton(
+                                onPressed: () {
+                                  // 关闭 Dialog
+                                  Navigator.pop(_);
+                                },
+                                child: Text('确定')),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    this._context = context;
     var head = Container(
         padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
         height: 200,
@@ -18,17 +71,20 @@ class Login extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(40, 0, 40, 10),
       child: Center(
         child: TextField(
+            controller: phoneController,
             decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(10, 6, 10, 6),
-          icon: ImageIcon(AssetImage('icons/phone.png'), color: Colors.blue),
-          hintText: '手机号',
-        )),
+              contentPadding: EdgeInsets.fromLTRB(10, 6, 10, 6),
+              icon:
+                  ImageIcon(AssetImage('icons/phone.png'), color: Colors.blue),
+              hintText: '手机号',
+            )),
       ),
     );
     var password = Container(
       padding: EdgeInsets.fromLTRB(40, 10, 40, 20),
       child: Center(
         child: TextField(
+            controller: passController,
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.fromLTRB(10, 6, 10, 6),
                 icon: ImageIcon(AssetImage('icons/password.png'),
@@ -40,9 +96,7 @@ class Login extends StatelessWidget {
     var loginBtn = Container(
       padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
       child: RaisedButton(
-        onPressed: () {
-          print('触碰了登录按钮');
-        },
+        onPressed: login,
         padding: EdgeInsets.fromLTRB(10, 6, 10, 6),
         color: Colors.blue,
         textColor: Colors.white,

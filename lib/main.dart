@@ -56,9 +56,10 @@ class MainPage extends StatefulWidget {
     var token = prefs.getString("token");
     if (token == null) {
       await MainPageState.loginPage(_context);
-    } else {
-      await prefs.setString("token", "xiaojiling");
     }
+//    else {
+//      await prefs.setString("token", "xiaojiling");
+//    }
   }
 }
 
