@@ -338,12 +338,36 @@ class RemindCell extends StatefulWidget {
 }
 
 class RemindCellState extends State<RemindCell> {
+  var _subTitleFontColor = Colors.blue;
+
+  Widget _takingMedicine = Container(
+      width: 60,
+      height: 22,
+      margin: EdgeInsets.only(right: 10),
+      child: FlatButton(
+        color: Colors.blue,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+        onPressed: () {},
+        textColor: Colors.white,
+        child: Text("服药"),
+      ));
+
+  Widget _deletedBtn = GestureDetector(
+    onTap: () {
+      print("点击了图片");
+    },
+    child: Image(
+      image: AssetImage("icons/delete.png"),
+      width: 28,
+      height: 28,
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 100,
-      margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(4.0))),
@@ -353,13 +377,32 @@ class RemindCellState extends State<RemindCell> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Image.asset(
-                'images/medicine.png',
-                height: 40.0,
-                fit: BoxFit.contain,
+              Container(
+                padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                child: Image.asset(
+                  'images/medicine.png',
+                  height: 40.0,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
+                decoration: BoxDecoration(
+                  image:
+                      DecorationImage(image: AssetImage("images/bg_time.png")),
+                ),
+                child: Text(
+                  "07:41",
+                  style: TextStyle(color: Colors.blue),
+                ),
               ),
               Expanded(
-                child: Text("date"),
+                child: SizedBox(height: 10),
+              ),
+              Container(
+                margin: EdgeInsets.only(right: 10),
+                child: Text("是不是 x 1"),
               )
             ],
           ),
@@ -368,29 +411,21 @@ class RemindCellState extends State<RemindCell> {
             height: 2,
             color: const Color.fromARGB(255, 242, 242, 242),
           ),
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 0, 0, 4),
-            child: Row(
-              children: <Widget>[
-                Text("title"),
-                Expanded(
-                    child: SizedBox(
-                  height: 10,
-                )),
-                Container(
-                    width: 60,
-                    height: 22,
-                    child: FlatButton(
-                      color: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(11)),
-                      onPressed: () {},
-                      textColor: Colors.white,
-                      child: Text("服药"),
-                    ))
-              ],
-            ),
-          )
+          Row(
+            children: <Widget>[
+              Container(
+                  margin: EdgeInsets.fromLTRB(10, 0, 0, 4),
+                  child: Text(
+                    "今日待服药",
+                    style: TextStyle(fontSize: 15, color: _subTitleFontColor),
+                  )),
+              Expanded(
+                  child: SizedBox(
+                height: 0,
+              )),
+              _takingMedicine
+            ],
+          ),
         ],
       ),
     );

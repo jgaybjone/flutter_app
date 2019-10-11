@@ -60,6 +60,7 @@ flutter:
     - images/lake.jpeg
     - images/portrait.png
     - images/medicine.png
+    - images/bg_time.png
     - icons/phone.png
     - icons/password.png
     - icons/wechat.png
@@ -67,6 +68,7 @@ flutter:
     - icons/ic_message.png
     - icons/ic_article.png
     - icons/ic_user.png
+    - icons/delete.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
