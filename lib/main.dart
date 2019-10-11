@@ -16,7 +16,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var login = Login();
+    var login = LoginPage();
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),
@@ -57,9 +57,6 @@ class MainPage extends StatefulWidget {
     if (token == null) {
       await MainPageState.loginPage(_context);
     }
-//    else {
-//      await prefs.setString("token", "xiaojiling");
-//    }
   }
 }
 
@@ -250,7 +247,7 @@ Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese Alps. Situate
         PageRouteBuilder(
           pageBuilder: (BuildContext context, Animation<double> animation,
                   Animation<double> secondaryAnimation) =>
-              Login(),
+              LoginPage(),
           transitionsBuilder: (BuildContext context,
               Animation<double> animation,
               Animation<double> secondaryAnimation,
@@ -275,7 +272,7 @@ class FavoriteWidget extends StatefulWidget {
 class _FavoriteWidgetState extends State<FavoriteWidget> {
   bool _isFavorite = true;
   int _favoriteCount = 41;
-  StatelessWidget _loginWidget = Login();
+  Widget _loginWidget = LoginPage();
 
   void _toggleFavorite() {
     setState(() {

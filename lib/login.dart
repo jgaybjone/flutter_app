@@ -1,7 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/backen_api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Login extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return LoginState();
+  }
+}
+
+class LoginState extends State<LoginPage> {
   BuildContext _context;
 
   //手机号的控制器
@@ -10,11 +20,40 @@ class Login extends StatelessWidget {
   //密码的控制器
   TextEditingController passController = TextEditingController();
 
-  void login() {
-    BackendApi.patientLogin(phoneController.text, passController.text, (data) {
+  void loginSuccess(Map data) {
+    var userid = data["userid"];
+    var nickname = data["nickname"];
+    var boxes = data["boxes"];
+    String token = data["token"];
+    if (token == null) {
+      token = "xiaojiling";
+    }
+    Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+    prefs.then((p) {
+      p.setString("token", token).then((_) => {print("save token success")});
+      if (userid != null && (userid is String)) {
+        p
+            .setString("userid", userid)
+            .then((_) => {print("save userid success")});
+      }
+      if (nickname != null && nickname is String) {
+        p
+            .setString("nickname", nickname)
+            .then((_) => {print("save nickname success")});
+      }
+      if (boxes != null && boxes is List && !boxes.isEmpty) {
+        var b = boxes[0];
+        if (b is String) {
+          p.setString("box", b).then((_) => {print("save box success")});
+        }
+      }
+    });
+    Navigator.pop(_context);
+  }
 
-      Navigator.pop(_context);
-    }, (data) {
+  void login() {
+    BackendApi.patientLogin(
+        phoneController.text, passController.text, loginSuccess, (data) {
       showDialog(
           context: _context,
           builder: (_) => Padding(
@@ -30,7 +69,7 @@ class Login extends StatelessWidget {
                         children: <Widget>[
                           Padding(
                             padding: EdgeInsets.only(top: 8),
-                            child: Text('Custom Dialog',
+                            child: Text('用户名或者密码错误☹️',
                                 style: TextStyle(
                                     fontSize: 16,
                                     decoration: TextDecoration.none)),
@@ -85,6 +124,7 @@ class Login extends StatelessWidget {
       child: Center(
         child: TextField(
             controller: passController,
+            obscureText: true,
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.fromLTRB(10, 6, 10, 6),
                 icon: ImageIcon(AssetImage('icons/password.png'),
