@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/backen_api.dart';
 import 'package:flutter_app/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,124 +64,17 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> {
   int _currentIndex = 0;
   List<String> _titles = ["服药提醒", "消息中心", "健康资讯", "个人中心"];
+  List<Widget> _cells = [];
+  String _phone;
+  List<dynamic> _reminders = [];
+  List<dynamic> _otherRecords = [];
+
+  MainPageState() {
+    _loadData();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final titleRow = Container(
-      padding: const EdgeInsets.all(32),
-      child: new Row(
-        children: <Widget>[
-          new Expanded(
-              child: new Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              new Container(
-                padding: EdgeInsets.only(bottom: 8),
-                child: new Text(
-                  'Oeschinen Lake Campground',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              Text(
-                'Kandersteg, Switzerland',
-                style: TextStyle(color: Colors.grey[500]),
-              )
-            ],
-          )),
-          FavoriteWidget()
-//          Icon(
-//            Icons.star,
-//            color: Colors.red[500],
-//          ),
-//          Text('41')
-        ],
-      ),
-    );
-
-    Color color = Theme.of(context).primaryColor;
-
-    final buttonRow = Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          new Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.call,
-                color: color,
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 8),
-                child: Text(
-                  'CALL',
-                  style: TextStyle(fontSize: 12, color: color),
-                ),
-              )
-            ],
-          ),
-          new Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.near_me,
-                color: color,
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 8),
-                child: Text(
-                  'ROUTE',
-                  style: TextStyle(fontSize: 12, color: color),
-                ),
-              )
-            ],
-          ),
-          new Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.share,
-                color: color,
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 8),
-                child: Text(
-                  'SHARE',
-                  style: TextStyle(fontSize: 12, color: color),
-                ),
-              )
-            ],
-          )
-        ],
-      ),
-    );
-
-    final contentRow = Container(
-      padding: EdgeInsets.all(32.0),
-      child: Text('''
-Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese Alps. Situated 1,578 meters above sea level, it is one of the larger Alpine Lakes. A gondola ride from Kandersteg, followed by a half-hour walk through pastures and pine forest, leads you to the lake, which warms to 20 degrees Celsius in the summer. Activities enjoyed here include rowing, and riding the summer toboggan run.
-        '''),
-    );
-
-    final imageRow = ListView(
-      shrinkWrap: true,
-      children: <Widget>[
-        Image.asset(
-          'images/lake.jpeg',
-          height: 240.0,
-          fit: BoxFit.fill,
-        ),
-      ],
-    );
-
-    var body = ListView(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      children: <Widget>[imageRow, titleRow, buttonRow, contentRow],
-    );
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.light,
@@ -212,33 +106,75 @@ Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese Alps. Situate
       ),
 //        body: body
       body: ListView(
-        children: <Widget>[
-          RemindCell(Colors.red, 0),
-          RemindCell(Colors.blue, 1),
-          RemindCell(Colors.grey, 0),
-          RemindCell(Colors.brown, 0),
-          RemindCell(Colors.brown, 0),
-          RemindCell(Colors.indigo, 1),
-          RemindCell(Colors.indigo, 1),
-          RemindCell(Colors.indigo, 1),
-          RemindCell(Colors.brown, 0),
-          RemindCell(Colors.brown, 0),
-          RemindCell(Colors.blue, 1),
-          RemindCell(Colors.blue, 1),
-          RemindCell(Colors.blue, 1),
-          RemindCell(Colors.blue, 1),
-          RemindCell(Colors.blue, 1),
-          RemindCell(Colors.blue, 1),
-          RemindCell(Colors.blue, 1),
-          RemindCell(Colors.blue, 1),
-          RemindCell(Colors.blue, 1),
-          Container(
-            height: 10,
-            color: Colors.transparent,
-          )
-        ],
-      ),
+          children:
+//        <Widget>[
+//          RemindCell(Colors.red, 0),
+//          RemindCell(Colors.blue, 1),
+//          RemindCell(Colors.grey, 0),
+//          RemindCell(Colors.brown, 0),
+//          RemindCell(Colors.brown, 0),
+//          RemindCell(Colors.indigo, 1),
+//          RemindCell(Colors.indigo, 1),
+//          RemindCell(Colors.indigo, 1),
+//          RemindCell(Colors.brown, 0),
+//          RemindCell(Colors.brown, 0),
+//          RemindCell(Colors.blue, 1),
+//          RemindCell(Colors.blue, 1),
+//          RemindCell(Colors.blue, 1),
+//          RemindCell(Colors.blue, 1),
+//          RemindCell(Colors.blue, 1),
+//          RemindCell(Colors.blue, 1),
+//          RemindCell(Colors.blue, 1),
+//          RemindCell(Colors.blue, 1),
+//          RemindCell(Colors.blue, 1),
+//          Container(
+//            height: 10,
+//            color: Colors.transparent,
+//          )
+//        ],
+              _cells),
     );
+  }
+
+  void _loadData() {
+    BackendApi.basic(context, (data) {
+      setState(() {
+        var d = data["data"];
+        _phone = d["phone"];
+        _reminders = d["reminders"];
+        _otherRecords = d["other_records"];
+        _cells = _mapToWidgets();
+      });
+    }, (error) {
+      print("获取数据错误");
+    });
+  }
+
+  List<Widget> _mapToWidgets() {
+    return _reminders.map((reminder) {
+      String record = reminder["record"];
+      Color color = Colors.blue;
+      String msg = "今日待服药";
+      int t;
+      if (record != null) {
+        String last = record.split(' ').last;
+        t = int.parse(last);
+      }
+      if (t == null) {
+        msg = "今日待服药";
+      } else if (t < 0) {
+        t = -t;
+        msg = "今日提前$t分钟服药";
+      } else if (t > 0) {
+        msg = "今日延后$t分钟服药";
+      } else if (t == 0) {
+        msg = "今日准点服药";
+        color = Colors.green;
+      }
+      String therapy = reminder["therapy"][0];
+      return RemindCell(color, t == null ? 0 : 1, reminder["time"], msg,
+          reminder["photo"], therapy.replaceFirst(" ", " x "));
+    }).toList();
   }
 
   static loginPage(BuildContext context) {
@@ -329,9 +265,14 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
 }
 
 class RemindCell extends StatefulWidget {
-  RemindCell(Color subTitleFontColor, int type) {
+  RemindCell(Color subTitleFontColor, int type, String time, String msg,
+      String imgUrl, String pill) {
     this._subTitleFontColor = subTitleFontColor;
     this._type = type;
+    this._time = time;
+    this._msg = msg;
+    this._imgUrl = imgUrl;
+    this._pill = pill;
   }
 
   var _subTitleFontColor = Colors.blue;
@@ -340,17 +281,27 @@ class RemindCell extends StatefulWidget {
    * 0 服药按钮，1 删除按钮
    */
   var _type = 0;
+  String _time;
+  String _msg;
+  String _imgUrl;
+  String _pill;
 
   @override
   State<StatefulWidget> createState() {
-    return RemindCellState(_subTitleFontColor, _type);
+    return RemindCellState(
+        _subTitleFontColor, _type, _time, _msg, _imgUrl, _pill);
   }
 }
 
 class RemindCellState extends State<RemindCell> {
-  RemindCellState(Color subTitleFontColor, int type) {
+  RemindCellState(Color subTitleFontColor, int type, String time, String msg,
+      String imgUrl, String pill) {
     this._subTitleFontColor = subTitleFontColor;
     this._type = type;
+    this._time = time;
+    this._msg = msg;
+    this._imgUrl = imgUrl;
+    this._pill = pill;
   }
 
   var _subTitleFontColor = Colors.blue;
@@ -359,6 +310,14 @@ class RemindCellState extends State<RemindCell> {
    * 0 服药按钮，1 删除按钮
    */
   var _type = 0;
+
+  String _time;
+
+  String _msg;
+
+  String _imgUrl;
+
+  String _pill;
 
   Widget _takingMedicine = Container(
       width: 60,
@@ -399,11 +358,13 @@ class RemindCellState extends State<RemindCell> {
             children: <Widget>[
               Container(
                 padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
-                child: Image.asset(
-                  'images/medicine.png',
-                  height: 40.0,
-                  fit: BoxFit.contain,
-                ),
+                child: _imgUrl == null
+                    ? Image.asset(
+                        'images/medicine.png',
+                        height: 40.0,
+                        fit: BoxFit.contain,
+                      )
+                    : Image.network(_imgUrl, height: 40, fit: BoxFit.contain),
               ),
               Container(
                 margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -413,7 +374,7 @@ class RemindCellState extends State<RemindCell> {
                       DecorationImage(image: AssetImage("images/bg_time.png")),
                 ),
                 child: Text(
-                  "07:41",
+                  _time,
                   style: TextStyle(color: Colors.blue),
                 ),
               ),
@@ -422,7 +383,7 @@ class RemindCellState extends State<RemindCell> {
               ),
               Container(
                 margin: EdgeInsets.only(right: 10),
-                child: Text("是不是 x 1"),
+                child: Text(_pill),
               )
             ],
           ),
@@ -436,8 +397,8 @@ class RemindCellState extends State<RemindCell> {
               Container(
                   margin: EdgeInsets.fromLTRB(10, 0, 0, 4),
                   child: Text(
-                    "今日待服药",
-                    style: TextStyle(fontSize: 15, color: _subTitleFontColor),
+                    _msg,
+                    style: TextStyle(fontSize: 14, color: _subTitleFontColor),
                   )),
               Expanded(
                   child: SizedBox(

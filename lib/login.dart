@@ -29,22 +29,18 @@ class LoginState extends State<LoginPage> {
       token = "xiaojiling";
     }
     Future<SharedPreferences> prefs = SharedPreferences.getInstance();
-    prefs.then((p) {
-      p.setString("token", token).then((_) => {print("save token success")});
+    prefs.then((p) async {
+      await p.setString("token", token);
       if (userid != null && (userid is String)) {
-        p
-            .setString("userid", userid)
-            .then((_) => {print("save userid success")});
+        await p.setString("userid", userid);
       }
       if (nickname != null && nickname is String) {
-        p
-            .setString("nickname", nickname)
-            .then((_) => {print("save nickname success")});
+        await p.setString("nickname", nickname);
       }
       if (boxes != null && boxes is List && !boxes.isEmpty) {
         var b = boxes[0];
         if (b is String) {
-          p.setString("box", b).then((_) => {print("save box success")});
+          await p.setString("box", b);
         }
       }
     });

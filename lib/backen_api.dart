@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_app/main.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BackendApi {
   static final isProd = const bool.fromEnvironment('dart.vm.product');
@@ -11,9 +14,22 @@ class BackendApi {
 
   static final authCodeUrl = baseUrl + "/authcode";
   static final patientLoginUrl = baseUrl + "/patientlogin";
+  static final basicUrl = baseUrl + "/basic";
 
   BackendApi() {
     print("Prod ? : $isProd, base url is $baseUrl");
+  }
+
+  static Map<String, String> baseHeaders() {
+    var headers = const {"content-type": "application/x-www-form-urlencoded"};
+    var props = SharedPreferences.getInstance();
+    props.then((p) {
+      var token = p.getString("token");
+      if (token != null) {
+        headers["token"] = token;
+      }
+    });
+    return headers;
   }
 
   static responseBodyHandler(
@@ -37,8 +53,25 @@ class BackendApi {
   static patientLogin(String phone, String pwd, Function successHandler,
       Function errorHandler) async {
     var resp = await http.post(patientLoginUrl,
-        headers: {"content-type": "application/x-www-form-urlencoded"},
+        headers: baseHeaders(),
         body: {"phone": phone, "pwd": pwd, "userid": ""});
+    responseBodyHandler(resp, successHandler, errorHandler);
+  }
+
+  //获取提醒和当天的服药记录
+  static basic(BuildContext context, Function successHandler,
+      Function errorHandler) async {
+    var props = await SharedPreferences.getInstance();
+    var token = props.getString("token");
+    var userid = props.getString("userid");
+    var box = props.getString("box");
+    box = box == null ? "" : box;
+    if (token == null || userid == null) {
+      MainPageState.loginPage(context);
+    }
+    var resp =
+        await http.get(basicUrl + "?userid=$userid&boxid=$box&token=$token");
+
     responseBodyHandler(resp, successHandler, errorHandler);
   }
 }
