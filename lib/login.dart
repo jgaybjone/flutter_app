@@ -5,21 +5,15 @@ import 'package:flutter_app/backen_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
-  Function callback;
 
   @override
   State<StatefulWidget> createState() {
-    return LoginState(callback);
+    return LoginState();
   }
 }
 
 class LoginState extends State<LoginPage> {
   BuildContext _context;
-  Function _callback;
-
-  LoginState(Function callback) {
-    this._callback = callback;
-  }
 
   //手机号的控制器
   TextEditingController phoneController = TextEditingController();
