@@ -204,72 +204,6 @@ class MainPageState extends State<MainPage> {
   }
 }
 
-//class FavoriteWidget extends StatefulWidget {
-//  @override
-//  State<StatefulWidget> createState() {
-//    return _FavoriteWidgetState();
-//  }
-//}
-//
-//class _FavoriteWidgetState extends State<FavoriteWidget> {
-//  bool _isFavorite = true;
-//  int _favoriteCount = 41;
-//  Widget _loginWidget = LoginPage();
-//
-//  void _toggleFavorite() {
-//    setState(() {
-//      if (_isFavorite) {
-//        _favoriteCount -= 1;
-//        _isFavorite = false;
-//      } else {
-//        _favoriteCount += 1;
-//        _isFavorite = true;
-//      }
-//    });
-////    Navigator.pushNamed(context, "/login");
-//    Navigator.push(
-//        context,
-//        PageRouteBuilder(
-//          pageBuilder: (BuildContext context, Animation<double> animation,
-//                  Animation<double> secondaryAnimation) =>
-//              _loginWidget,
-//          transitionsBuilder: (BuildContext context,
-//              Animation<double> animation,
-//              Animation<double> secondaryAnimation,
-//              Widget child) {
-//            return SlideTransition(
-//              position: animation
-//                  .drive(Tween(begin: Offset(0.0, 1.0), end: Offset.zero)),
-//              child: child,
-//            );
-//          },
-//        ));
-//  }
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Row(
-//      mainAxisSize: MainAxisSize.min,
-//      children: <Widget>[
-//        Container(
-//          padding: EdgeInsets.all(0.0),
-//          child: IconButton(
-//            icon: Icon(_isFavorite ? Icons.star : Icons.star_border),
-//            color: Colors.red[500],
-//            onPressed: _toggleFavorite,
-//          ),
-//        ),
-//        SizedBox(
-//          width: 18,
-//          child: Container(
-//            child: Text('$_favoriteCount'),
-//          ),
-//        )
-//      ],
-//    );
-//  }
-//}
-
 class RemindCell extends StatefulWidget {
   RemindCell(Color subTitleFontColor, int type, String time, String msg,
       String imgUrl, String pill) {
@@ -363,15 +297,19 @@ class RemindCellState extends State<RemindCell> {
           Row(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
-                child: _imgUrl == null
-                    ? Image.asset(
-                        'images/medicine.png',
-                        height: 40.0,
-                        fit: BoxFit.contain,
-                      )
-                    : Image.network(_imgUrl, height: 40, fit: BoxFit.contain),
-              ),
+                  padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                  child: _imgUrl == null
+                      ? Image.asset(
+                          'images/medicine.png',
+                          height: 40.0,
+                          fit: BoxFit.contain,
+                        )
+                      : FadeInImage.assetNetwork(
+                          fit: BoxFit.contain,
+                          height: 40,
+                          width: 40,
+                          placeholder: 'images/medicine.png',
+                          image: _imgUrl)),
               Container(
                 margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
                 padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
