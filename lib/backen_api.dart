@@ -21,7 +21,8 @@ class BackendApi {
   }
 
   static Map<String, String> baseHeaders() {
-    var headers = const {"content-type": "application/x-www-form-urlencoded"};
+    var headers = Map<String, String>();
+    headers["content-type"] = "application/x-www-form-urlencoded";
     var props = SharedPreferences.getInstance();
     props.then((p) {
       var token = p.getString("token");
@@ -66,7 +67,7 @@ class BackendApi {
     var userid = props.getString("userid");
     var box = props.getString("box");
     box = box == null ? "" : box;
-    if (token == null || userid == null) {
+    if ((token == null || userid == null) && context != null) {
       MainPageState.loginPage(context);
     }
     var resp =

@@ -31,9 +31,12 @@ class MyApp extends StatelessWidget {
 }
 
 class MainApp extends StatelessWidget {
+  Function update;
+
   @override
   Widget build(BuildContext context) {
     var manPage = MainPage(context);
+    update = manPage.update;
     return manPage;
   }
 }
@@ -41,6 +44,7 @@ class MainApp extends StatelessWidget {
 // ignore: must_be_immutable
 class MainPage extends StatefulWidget {
   BuildContext _context;
+  Function update;
 
   MainPage(BuildContext context) {
     _context = context;
@@ -49,14 +53,17 @@ class MainPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     this._checkToken();
-    return MainPageState();
+    var state = MainPageState();
+    update = state.loadData;
+    return state;
   }
 
   _checkToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
     if (token == null) {
-      await MainPageState.loginPage(_context);
+//      MainPageState.loginPage(_context);
+      MainPageState.loginPageWithCallback(_context, update);
     }
   }
 }
@@ -70,7 +77,7 @@ class MainPageState extends State<MainPage> {
   List<dynamic> _otherRecords = [];
 
   MainPageState() {
-    _loadData();
+    loadData();
   }
 
   @override
@@ -105,38 +112,11 @@ class MainPageState extends State<MainPage> {
         },
       ),
 //        body: body
-      body: ListView(
-          children:
-//        <Widget>[
-//          RemindCell(Colors.red, 0),
-//          RemindCell(Colors.blue, 1),
-//          RemindCell(Colors.grey, 0),
-//          RemindCell(Colors.brown, 0),
-//          RemindCell(Colors.brown, 0),
-//          RemindCell(Colors.indigo, 1),
-//          RemindCell(Colors.indigo, 1),
-//          RemindCell(Colors.indigo, 1),
-//          RemindCell(Colors.brown, 0),
-//          RemindCell(Colors.brown, 0),
-//          RemindCell(Colors.blue, 1),
-//          RemindCell(Colors.blue, 1),
-//          RemindCell(Colors.blue, 1),
-//          RemindCell(Colors.blue, 1),
-//          RemindCell(Colors.blue, 1),
-//          RemindCell(Colors.blue, 1),
-//          RemindCell(Colors.blue, 1),
-//          RemindCell(Colors.blue, 1),
-//          RemindCell(Colors.blue, 1),
-//          Container(
-//            height: 10,
-//            color: Colors.transparent,
-//          )
-//        ],
-              _cells),
+      body: ListView(children: _cells),
     );
   }
 
-  void _loadData() {
+  void loadData() {
     BackendApi.basic(context, (data) {
       setState(() {
         var d = data["data"];
@@ -196,37 +176,15 @@ class MainPageState extends State<MainPage> {
           },
         ));
   }
-}
 
-class FavoriteWidget extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return _FavoriteWidgetState();
-  }
-}
-
-class _FavoriteWidgetState extends State<FavoriteWidget> {
-  bool _isFavorite = true;
-  int _favoriteCount = 41;
-  Widget _loginWidget = LoginPage();
-
-  void _toggleFavorite() {
-    setState(() {
-      if (_isFavorite) {
-        _favoriteCount -= 1;
-        _isFavorite = false;
-      } else {
-        _favoriteCount += 1;
-        _isFavorite = true;
-      }
-    });
-//    Navigator.pushNamed(context, "/login");
+  static loginPageWithCallback(BuildContext context, Function success) {
+    var page = LoginPage();
     Navigator.push(
         context,
         PageRouteBuilder(
           pageBuilder: (BuildContext context, Animation<double> animation,
                   Animation<double> secondaryAnimation) =>
-              _loginWidget,
+              page,
           transitionsBuilder: (BuildContext context,
               Animation<double> animation,
               Animation<double> secondaryAnimation,
@@ -237,32 +195,80 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
               child: child,
             );
           },
-        ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.all(0.0),
-          child: IconButton(
-            icon: Icon(_isFavorite ? Icons.star : Icons.star_border),
-            color: Colors.red[500],
-            onPressed: _toggleFavorite,
-          ),
-        ),
-        SizedBox(
-          width: 18,
-          child: Container(
-            child: Text('$_favoriteCount'),
-          ),
-        )
-      ],
-    );
+        )).then((result) {
+      print("login result $result");
+      if (result == "loginSuccess") {
+        success();
+      }
+    });
   }
 }
+
+//class FavoriteWidget extends StatefulWidget {
+//  @override
+//  State<StatefulWidget> createState() {
+//    return _FavoriteWidgetState();
+//  }
+//}
+//
+//class _FavoriteWidgetState extends State<FavoriteWidget> {
+//  bool _isFavorite = true;
+//  int _favoriteCount = 41;
+//  Widget _loginWidget = LoginPage();
+//
+//  void _toggleFavorite() {
+//    setState(() {
+//      if (_isFavorite) {
+//        _favoriteCount -= 1;
+//        _isFavorite = false;
+//      } else {
+//        _favoriteCount += 1;
+//        _isFavorite = true;
+//      }
+//    });
+////    Navigator.pushNamed(context, "/login");
+//    Navigator.push(
+//        context,
+//        PageRouteBuilder(
+//          pageBuilder: (BuildContext context, Animation<double> animation,
+//                  Animation<double> secondaryAnimation) =>
+//              _loginWidget,
+//          transitionsBuilder: (BuildContext context,
+//              Animation<double> animation,
+//              Animation<double> secondaryAnimation,
+//              Widget child) {
+//            return SlideTransition(
+//              position: animation
+//                  .drive(Tween(begin: Offset(0.0, 1.0), end: Offset.zero)),
+//              child: child,
+//            );
+//          },
+//        ));
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return Row(
+//      mainAxisSize: MainAxisSize.min,
+//      children: <Widget>[
+//        Container(
+//          padding: EdgeInsets.all(0.0),
+//          child: IconButton(
+//            icon: Icon(_isFavorite ? Icons.star : Icons.star_border),
+//            color: Colors.red[500],
+//            onPressed: _toggleFavorite,
+//          ),
+//        ),
+//        SizedBox(
+//          width: 18,
+//          child: Container(
+//            child: Text('$_favoriteCount'),
+//          ),
+//        )
+//      ],
+//    );
+//  }
+//}
 
 class RemindCell extends StatefulWidget {
   RemindCell(Color subTitleFontColor, int type, String time, String msg,

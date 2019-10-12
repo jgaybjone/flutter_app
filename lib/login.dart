@@ -5,14 +5,21 @@ import 'package:flutter_app/backen_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
+  Function callback;
+
   @override
   State<StatefulWidget> createState() {
-    return LoginState();
+    return LoginState(callback);
   }
 }
 
 class LoginState extends State<LoginPage> {
   BuildContext _context;
+  Function _callback;
+
+  LoginState(Function callback) {
+    this._callback = callback;
+  }
 
   //手机号的控制器
   TextEditingController phoneController = TextEditingController();
@@ -43,8 +50,8 @@ class LoginState extends State<LoginPage> {
           await p.setString("box", b);
         }
       }
+      Navigator.pop(_context, "loginSuccess");
     });
-    Navigator.pop(_context);
   }
 
   void login() {
@@ -145,7 +152,7 @@ class LoginState extends State<LoginPage> {
       child: RaisedButton(
         onPressed: () {
           print('触碰了注册按钮');
-          Navigator.pop(context);
+          Navigator.pop(context, "success");
         },
 //        padding: EdgeInsets.fromLTRB(10, 6, 10, 6),
         color: Colors.blue,
